@@ -48,6 +48,7 @@ executable fglang-demo
                      , flock-pieces-fglang
                      , directory
                      , containers
+                     , unordered-containers
   default-language:    Haskell2010
 
 
