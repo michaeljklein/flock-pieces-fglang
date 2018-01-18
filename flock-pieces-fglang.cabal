@@ -17,6 +17,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Data.Flip
                      , Data.Functor.Turn
+                     , Data.Functor.Join
                      , Data.HashSet.Utils
                      , Data.Hashable.Orphans
                      , Data.Tuple.Utils
