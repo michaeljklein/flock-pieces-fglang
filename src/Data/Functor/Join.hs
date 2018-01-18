@@ -9,7 +9,6 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-
 module Data.Functor.Join where
 
 import Data.Profunctor (Profunctor)
