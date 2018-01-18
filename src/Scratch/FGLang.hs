@@ -1,6 +1,10 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE TemplateHaskell #-}
+
 
 -- |
 --
@@ -109,14 +113,16 @@
 module Scratch.FGLang where
 
 import Control.Monad (liftM2)
+import Data.HashSet.Utils (Set, replacements)
+import Data.Hashable (Hashable(..))
 import Data.Hashable.Orphans ()
 import Data.Monoid ((<>))
 import Data.Sequence hiding (filter)
+import Data.String (IsString(..))
 import Prelude hiding (filter, reverse, map)
+import Test.QuickCheck (Arbitrary, quickCheckAll)
 import qualified Data.HashSet as S (map, fromList, unions, toList)
 import qualified Prelude as P (filter)
-import Data.HashSet.Utils (Set, replacements)
-
 
 
 
@@ -142,7 +148,17 @@ import Data.HashSet.Utils (Set, replacements)
 type Lang = Bool
 
 -- | An expression is a sqeuence of `Lang`s
-type Expr  = Seq Lang
+newtype Expr = Expr { getExpr :: Seq Lang } deriving (Eq, Ord, Show, Hashable, Arbitrary)
+
+
+-- | A left, strict fold using `hashWithSalt`
+-- instance Hashable Expr where
+--   hashWithSalt salt = foldl' hashWithSalt salt . getExpr
+
+-- | Generate a random list, append a random value, and ensure their hashes are different
+prop_HashableExpr :: Bool -> [Bool] -> Bool
+prop_HashableExpr x xs = hash (Expr (fromList (x:xs))) /= hash (Expr (fromList (  xs)))
+
 
 -- | Parse an `Expr`.
 --
@@ -154,13 +170,34 @@ type Expr  = Seq Lang
 -- @
 --
 parse :: String -> Expr
-parse = fromList . fmap (\x -> if x == 'F' then False else True) . P.filter (liftM2 (||) (== 'F') (== 'G'))
+parse = Expr . fromList . fmap (/= 'F') . P.filter (liftM2 (||) (== 'F') (== 'G'))
 
--- | Abbreviation for `parse`
-p :: String -> Expr
-p = parse
+instance IsString Expr where
+  fromString = parse
 
 
+-- | Test whether all of the elements of a list are equal.
+--
+-- Taken from: @pieces/inhabited/src/Data/Expr.hs@
+--
+allEq :: Eq a => [a] -> Bool
+allEq []     = True
+allEq (x:xs) = all (== x) xs
+
+
+-- | Test that parsing a string of only F, G is equal to parsing that string with a not-F,G string prepended, appended, resp.
+prop_parseIgnoresAllButFG :: [Bool] -> String -> Bool
+prop_parseIgnoresAllButFG bs sy = allEq . fmap parse $ [ only_FG
+                                                   , not_FG ++ only_FG
+                                                   , only_FG ++ not_FG
+                                                   ]
+  where
+    only_FG = (\x -> if x then 'G' else 'F') <$> bs
+    not_FG  = P.filter (not . (liftM2 (||) (== 'F') (== 'G'))) sy
+
+-- | Static test case: @parse "FGHBVDERTYHBGVCDSER" == parse "FGG"@
+prop_parseIgnoresAllButFG' :: Bool
+prop_parseIgnoresAllButFG' = parse "FGHBVDERTYHBGVCDSER" == parse "FGG"
 
 
 -- | First base
@@ -170,7 +207,15 @@ p = parse
 -- @
 --
 base1 :: Expr
-base1 = [True, False]
+base1 = Expr [True, False]
+
+prop_r0_base1 :: Bool
+prop_r0_base1 = allEq [ r0 base1
+                      , S.fromList []
+                      , r0 "GF"
+                      ]
+
+
 
 -- | Second base
 --
@@ -179,7 +224,14 @@ base1 = [True, False]
 -- @
 --
 base2 :: Expr
-base2 = [True, False, False]
+base2 = Expr [True, False, False]
+
+prop_r0_base2 :: Bool
+prop_r0_base2 = allEq [ r0 base2
+                      , S.fromList ["FGFG", "FGFF"]
+                      , r0 "GFF"
+                      ]
+
 
 -- | Third base
 --
@@ -188,7 +240,14 @@ base2 = [True, False, False]
 -- @
 --
 base3 :: Expr
-base3 = [True, False, True]
+base3 = Expr [True, False, True]
+
+prop_r0_base3 :: Bool
+prop_r0_base3 = allEq [ r0 base3
+                      , S.fromList ["GGFF", "GGFG"]
+                      , r0 "GFG"
+                      ]
+
 
 -- | `base1`, `base2`, and `base3`
 --
@@ -237,12 +296,22 @@ base3 = [True, False, True]
 bases :: Set Expr
 bases = S.fromList [base1, base2, base3]
 
+prop_rs_bases :: Bool
+prop_rs_bases = rs bases == S.fromList ["GGFF", "GGFG", "FGFG", "FGFF"]
+
+prop_ex_bases :: Bool
+prop_ex_bases = ex bases == S.fromList ["GFG", "GFF", "GGFF", "GGFG", "GF", "FGFG", "FGFF"]
+
+
 -- | All replacements of an expression.
 --
 -- Uses `replacements` on `base1`, `base2`, `base3`.
 allReplacements :: Expr -> Set Expr
-allReplacements = (\x y z -> x <> y <> z) <$> replacements base1 [base2, base3] <*> replacements base2 [base1, base3] <*> replacements base3 [base1, base2]
+allReplacements = S.map Expr . ((\x y z -> x <> y <> z) <$> replacementsE base1 [base2, base3] <*> replacementsE base2 [base1, base3] <*> replacementsE base3 [base1, base2])
 
+-- | It would be @`coerce` `replacements`@ if GHC could derive it
+replacementsE :: Expr -> Set Expr -> Expr -> Set (Seq Lang)
+replacementsE (Expr x) xs (Expr y) = replacements x (S.map getExpr xs) y
 
 
 -- | Alias for `allReplacements`
@@ -266,7 +335,7 @@ nest n f x = nest (n - 1) f (f x)
 
 -- | Iterate on a `Set` of expressions with `allReplacements`
 rs :: Set Expr -> Set Expr
-rs = S.unions . S.toList . S.map allReplacements
+rs = S.unions . S.toList . S.map (allReplacements)
 
 -- | `rs`, the given number of times
 rsn :: Int -> Set Expr -> Set Expr
@@ -281,4 +350,8 @@ ex x = rs x <> x
 exn :: Int -> Set Expr -> Set Expr
 exn n = nest n ex
 
+
+return []
+quickCheckFGLang :: IO Bool
+quickCheckFGLang = $quickCheckAll
 
