@@ -16,8 +16,10 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Data.Flip
-                     , Data.Hashable.Orphans
+                     , Data.Functor.Turn
                      , Data.HashSet.Utils
+                     , Data.Hashable.Orphans
+                     , Data.Tuple.Utils
                      , Scratch
                      , Scratch.FGLang
   build-depends:       base >= 4.9 && < 5

@@ -1,9 +1,11 @@
-{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Scratch where
 
 import Control.Applicative (liftA2)
+import Control.Comonad (Comonad(..))
 import Data.Flip (Flip(..))
 import Data.List.NonEmpty (NonEmpty(..))
 import Data.Tuple (swap)
@@ -24,11 +26,20 @@ instance Functor (f b) => Functor (Action f b) where
   fmap f (Action xs) = Action (fmap f <$> xs)
 
 
--- | `Object`, but with a sum (`Either`) instead of a tuple
-data Result f b c = Result { getResult :: Either c (Effect f b c) }
 
--- | `Action`
-data Effect f b c = Effect { runEffect :: f      b (Result f b c) }
+instance Comonad (f b) => Comonad (Object f b) where
+  extract = fst . getObject
+
+  duplicate x@(Object (_, ys)) = Object (x, const x <$> ys)
+
+
+instance Comonad (f b) => Comonad (Action f b) where
+  extract = extract . extract . runAction
+
+  duplicate x@(Action xs) = Action $ fmap (const x) <$> xs
+
+
+
 
 -- | Simple fixed point newtype
 newtype Fix f = Fix { runFix :: f (Fix f) } deriving (Generic)
@@ -36,6 +47,31 @@ newtype Fix f = Fix { runFix :: f (Fix f) } deriving (Generic)
 -- | Cycle a pair, resulting in a fixed point
 cyclePair :: Object (,) a b -> Fix ((,) (a, b))
 cyclePair (Object (x, Action (y, zs))) = Fix ((y, x), cyclePair zs)
+
+-- | Convert a `Fix` to an infinite list
+fixList :: Fix ((,) a) -> [a]
+fixList (Fix ~(x, xs)) = x : fixList xs
+
+
+instance Show a => Show (Fix ((,) a)) where
+  show = ("Fix " ++) . show . fixList
+
+
+
+
+
+-- | `Object`, but with a sum (`Either`) instead of a tuple
+data Result f b c = Result { getResult :: Either c (Effect f b c) }
+
+-- | `Action`, but with a sum (`Either`) instead of a tuple
+data Effect f b c = Effect { runEffect :: f      b (Result f b c) }
+
+
+instance Functor (f b) => Functor (Result f b) where
+  fmap f (Result x) = Result (either (Left . f) (Right . fmap f) x)
+
+instance Functor (f b) => Functor (Effect f b) where
+  fmap f (Effect x) = Effect (fmap f <$> x)
 
 
 -- | Given all the functional pairs to define a function, we can cyclically wrap the pairs into an `Action` over pairs.
@@ -64,10 +100,6 @@ appIsh :: (Eq a, Functor (f t)) => Action (,) a b -> Object f t a -> Object f t 
 appIsh (Action (x, Object (y, ys))) (Object (x', Action zs))
   | x == x'    = Object (y, Action (appIsh ys <$> zs))
   | otherwise = appIsh ys (Object (x', Action zs))
-
-
-
--- fst, snd, swap, fmapEither, fmapTuple
 
 
 -- | Convert a flipped result to an either (sum)
@@ -129,17 +161,5 @@ mapEitherAction = toAction
 -- | `toObject`
 mapEitherObject :: Functor (f (c -> d, Either b c)) => f (c -> d, Either b c) (Either b d) -> Either b d -> Object f (c -> d, Either b c) (Either b d)
 mapEitherObject = toObject
-
--- | `undefined`
---
--- @
--- Result = Either Expression Effect
--- Effect = (Expression, Result)
-
--- Either a b = Result (Object f) b a
--- @
---
-mapTupleAction :: Action f (c -> d, (b, c)) (b, d)
-mapTupleAction = Action (undefined :: f (c -> d, (b, c)) (Object f (c -> d, (b, c)) (b, d)))
 
 

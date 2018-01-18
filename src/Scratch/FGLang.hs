@@ -1,16 +1,16 @@
-{-# LANGUAGE OverloadedLists #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 
 -- a pusher is guaranteed to push all it can over at once only if f is pointed and props hold.
@@ -69,6 +69,7 @@ import qualified Prelude as P (filter)
 import Data.HashSet.Utils (Set, replacements)
 import Data.Profunctor (Profunctor)
 
+
 -- | An isomorphism, as in: https://hackage.haskell.org/package/lens-4.15.4/docs/Control-Lens-Iso.html
 type Iso s t a b = forall p f. (Profunctor p, Functor f) => p a (f b) -> p s (f t)
 
@@ -121,8 +122,16 @@ joinR = undefined
 -- | Simple wrapper
 newtype F f a = F { getF :: f a }
 
+instance Functor f => Functor (F f) where
+  fmap f (F x) = F (fmap f x)
+
+
 -- | Simple wrapper
 newtype G g a = G { getG :: g a }
+
+instance Functor g => Functor (G g) where
+  fmap f (G x) = G (fmap f x)
+
 
 -- | The type of a join
 type family JoinType (a :: *) :: * where
@@ -142,11 +151,12 @@ type family JoinType'' (f :: * -> *) (g :: * -> *) (n :: Nat) (a :: *) :: * wher
 class Joining' (JoinType a) (JoinType b) => Joining a b where
   joining :: a -> b
 
+-- | Generic function typeclass, helper for `Joining`
 class Joining' a b where
   joining' :: a -> b
 
--- instance Joining' (F f a) (F f b) => Joining' (F f (F f a)) (F f (F f b)) where
---   joining' = fmap joining'
+instance (Functor f, Joining' (F f a) (F f b)) => Joining' (F f (F f a)) (F f (F f b)) where
+  joining' = fmap joining'
 
 -- instance Joining' (F f (G g (F f a)))
 
@@ -160,52 +170,50 @@ class Joining' a b where
 
 
 
--- type family JoinType (a :: *) :: JoinTypes where
---   JoinType (f (f (f a))) = JoinL --  (f (f a))
---   JoinType (f (f (g a))) = JoinR --  (f (g a))
---   JoinType (f (g (f a))) = JoinL -- (f (g a))
---   JoinType    (f (g a))  = Joined
+type family JoinType''' (a :: *) :: JoinTypes where
+  JoinType''' (f (f (f a))) = 'JoinL --  (f (f a))
+  JoinType''' (f (f (g a))) = 'JoinR --  (f (g a))
+  JoinType''' (f (g (f a))) = 'JoinL -- (f (g a))
+  JoinType'''    (f (g a))  = 'Joined
 
 
--- class (JointL a ~ JointL b, JointR a ~ JointR b, Join (JointL a) (JointR b), JoinType a ~ joinTypeA, JoinType b ~ joinTypeB) => Joining a b (joinTypeA :: JoinTypes) (joinTypeB :: JoinTypes) where
---   joining :: a -> b
+-- | For this attempt, the instances are still pretty far from compiling:
+--
+-- @
+-- instance Joining'' a b Joined Joined => Joining'' a b JoinL JoinL where
+--   joining'' x = joinL . joining'' x . joinR
+--
+-- instance Joining'' a b Joined Joined => Joining'' a b JoinL JoinR where
+--   joining'' x = joinL . joining'' x . joinR
+--
+-- instance Joining'' a b Joined Joined => Joining'' a b JoinL Joined where
+--   joining'' x = joinL . joining'' x
+--
+-- instance Joining'' a b Joined Joined => Joining'' a b JoinR JoinL where
+--   joining'' x = joinR . joining'' x . joinR
+--
+-- instance Joining'' a b Joined Joined => Joining'' a b JoinR JoinR where
+--   joining'' x = joinR . joining'' x . joinR
+--
+-- instance Joining'' a b Joined Joined => Joining'' a b JoinR Joined where
+--   joining'' x = joinR . joining'' x . joinR
+--
+-- instance Joining'' a b Joined Joined => Joining'' a b Joined JoinL where
+--   joining'' x =         joining'' x . joinR
+--
+-- instance Joining'' a b Joined Joined => Joining'' a b Joined JoinR where
+--   joining'' x =         joining'' x . joinR
+--
+-- instance Joining'' a b Joined Joined => Joining'' a b Joined Joined where
+--   joining'' x = id
+-- @
+--
+class (JointL a ~ JointL b, JointR a ~ JointR b, Join (JointL a) (JointR b), JoinType''' a ~ joinTypeA, JoinType''' b ~ joinTypeB) => Joining'' a b (joinTypeA :: JoinTypes) (joinTypeB :: JoinTypes) where
+  joining'' :: a -> b
 
--- instance Joining a b Joined Joined => Joining a b JoinL JoinL where
---   joining x = joinL . joining x . joinR
-
--- instance Joining a b Joined Joined => Joining a b JoinL JoinR where
---   joining x = joinL . joining x . joinR
-
--- instance Joining a b Joined Joined => Joining a b JoinL Joined where
---   joining x = joinL . joining x
-
--- instance Joining a b Joined Joined => Joining a b JoinR JoinL where
---   joining x = joinR . joining x . joinR
-
--- instance Joining a b Joined Joined => Joining a b JoinR JoinR where
---   joining x = joinR . joining x . joinR
-
--- instance Joining a b Joined Joined => Joining a b JoinR Joined where
---   joining x = joinR . joining x . joinR
-
--- instance Joining a b Joined Joined => Joining a b Joined JoinL where
---   joining x =         joining x . joinR
-
--- instance Joining a b Joined Joined => Joining a b Joined JoinR where
---   joining x =         joining x . joinR
-
--- instance Joining a b Joined Joined => Joining a b Joined Joined where
---   joining x = id
 
 
 
-
-
-
--- instance Joining (f (g a)) (f (g a)) where
-
--- (f g, f g) -> Join f g
--- (f (f a), f (f a)) -> Joining (f a) (f a)
 
 
 
@@ -379,106 +387,5 @@ rs = S.unions . S.toList . S.map allReplacements
 -- | Iterate as in `rs`, but keep already seen values
 ex :: Set Expr -> Set Expr
 ex x = rs x <> x
-
-
--- | A functor `Turn`ing class..
---
--- Ideas for implementing this language as a Haskell class:
---
--- @
---  givenExpression :: f (g a)
---  rturn ::        any (g a) <-> any (g (f a))
---  rturn :: C h => h   (g a) <-> h   (g (f a))
---
---  lturn ::        any a <-> f (any a)
---  lturn :: C h => h   a  -> f (h   a)
--- @
---
--- @
--- class C f g where
---   base0 :: Turn f g (Compose f g) => ()
---   base1 :: Turn f g (Compose f (Compose g f)) => ()
---
---   lturnWitness :: (Turn f g h => ()) -> (Turn f g (Compose f h) => ())
---
--- instance C (Base f g)
--- instance C (Compose h g) => C (Compose h (Compose g f))
--- instance C h => C (Compose f h)
--- @
---
-class Turn f g h | h -> f, h -> g where
-  -- | Turn left
-  lturn  :: h a -> f (h a)
-
-  -- | Turn right
-  rturn  :: h (g a) -> h (g (f a))
-
--- | categorical dual of Turn
-class Coturn f g h | h -> f, h -> g where
-  -- | Co-Turn left
-  clturn :: f (h a) -> h a
-
-  -- | Co-Turn right
-  crturn :: h (g (f a)) -> h (g a)
-
--- | The free implementation of a "freely turning" data type
-data FreeTurn f g a where
-  FreeLTurn :: f (FreeTurn f g a) -> FreeTurn f g a
-  FreeRTurn :: FreeTurn f g (g a) -> FreeTurn f g (g (f a))
-
--- | Can we prove that @(lturn (FreeRTurn x))@ is a type error?
---
--- @
---  FreeRTurn x :: FreeTurn f g (g (f a))
---  lturn       :: FreeTurn f g       a   -> f (FreeTurn f g a)
---
---  Thus g (f a) ~ a, a type error in standard haskell
--- @
---
--- Q.E.D.
---
-instance Turn f g (FreeTurn f g) where
-  lturn :: FreeTurn f g a -> f (FreeTurn f g a)
-  lturn (FreeLTurn x) = x
-  lturn (_          ) = error "Absurd: g (f a) ~ a"
-
-  rturn :: FreeTurn f g (g a) -> FreeTurn f g (g (f a))
-  rturn = FreeRTurn
-
--- | Free `Coturn`
-data FreeCoturn f g a where
-  FreeLcoturn :: f (FreeCoturn f g a) -> FreeCoturn f g a
-  FreeRcoturn :: FreeCoturn f g (g (f a)) -> FreeCoturn f g (g a)
-
--- | This one is easy
-instance Coturn f g (FreeCoturn f g) where
-  clturn :: f (FreeCoturn f g a) -> FreeCoturn f g a
-  clturn = FreeLcoturn
-
-  crturn :: FreeCoturn f g (g (f a)) -> FreeCoturn f g (g a)
-  crturn = FreeRcoturn
-
--- | Left and right turning data structure
-data Turning f g a where
-  LTurn   :: f (Turning f g a)     -> Turning f g a
-  RTurn   :: Turning f g (g a)     -> Turning f g (g (f a))
-  RCoturn :: Turning f g (g (f a)) -> Turning f g (g a)
-
-instance Turn f g (Turning f g) where
-  lturn :: Turning f g a -> f (Turning f g a)
-  lturn (LTurn x) = x
-  lturn (      _) = error "Absurd: f (g a) ~ a"
-
-  rturn :: Turning f g (g a) -> Turning f g (g (f a))
-  rturn = RTurn
-
-instance Coturn f g (Turning f g) where
-  clturn :: f (Turning f g a)     -> Turning f g a
-  clturn = LTurn
-
-  crturn :: Turning f g (g (f a)) -> Turning f g (g a)
-  crturn = RCoturn
-
-
 
 
