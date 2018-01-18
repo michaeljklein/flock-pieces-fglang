@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Data.Hashable.Orphans where
@@ -5,7 +7,7 @@ module Data.Hashable.Orphans where
 import Data.Foldable (foldl')
 import Data.Hashable (Hashable(..))
 import Data.Sequence (Seq, fromList)
-import Test.QuickCheck (quickCheck)
+import Test.QuickCheck (quickCheckAll)
 
 
 -- | A left, strict fold using `hashWithSalt`
@@ -17,6 +19,10 @@ testHashableSeq :: (Eq a, Hashable a) => a -> [a] -> Bool
 testHashableSeq x xs = hash (fromList (x:xs)) /= hash (fromList (  xs))
 
 -- | `quickCheck` `testHashableSeq`
-testHashableSeqIO :: IO ()
-testHashableSeqIO = quickCheck (testHashableSeq :: Int -> [Int] -> Bool)
+prop_testHashableSeq :: Int -> [Int] -> Bool
+prop_testHashableSeq = testHashableSeq
+
+return []
+quickCheckHashableSeq :: IO Bool
+quickCheckHashableSeq = $quickCheckAll
 

@@ -2,7 +2,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Scratch where
+module Data.Functor.Object where
 
 import Control.Applicative (liftA2)
 import Control.Comonad (Comonad(..))

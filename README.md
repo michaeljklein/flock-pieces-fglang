@@ -5,25 +5,37 @@ A very small term-rewriting language, related to the study of push-throughs.
 
 ```bash
 > git rev-parse HEAD
-3e2fae3698360889db51d6930b1e82aadac55d78
+73d42c0cdc7f9747c32cdc3c5051e7f1398e0426
 
-> tree src
-src
-├── Data
-│   ├── Flip.hs
-│   ├── Functor
-│   │   ├── Join.hs
-│   │   └── Turn.hs
-│   ├── HashSet
-│   │   └── Utils.hs
-│   ├── Hashable
-│   │   └── Orphans.hs
-│   └── Tuple
-│       └── Utils.hs
-├── Scratch
-│   └── FGLang.hs
-└── Scratch.hs
+> tree .
+.
+├── LICENSE
+├── README.md
+├── Setup.hs
+├── app
+│   └── Main.hs
+├── bench
+│   └── Bench.hs
+├── flock-pieces-fglang.cabal
+├── render_graph.sh
+├── src
+│   └── Data
+│       ├── FGLang.hs
+│       ├── Flip.hs
+│       ├── Functor
+│       │   ├── Join.hs
+│       │   ├── Object.hs
+│       │   └── Turn.hs
+│       ├── HashSet
+│       │   └── Utils.hs
+│       ├── Hashable
+│       │   └── Orphans.hs
+│       └── Tuple
+│           └── Utils.hs
+├── stack.yaml
+└── test
+    └── Test.hs
 
-6 directories, 8 files
+9 directories, 17 files
 ```
 

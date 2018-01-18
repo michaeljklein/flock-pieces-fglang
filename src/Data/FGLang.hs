@@ -110,7 +110,7 @@
 -- Question: is the @checker@ function a valid function in the category? I'm not sure.
 -- We may have to fall back to a fold.
 --
-module Scratch.FGLang where
+module Data.FGLang where
 
 import Control.Monad (liftM2)
 import Data.HashSet.Utils (Set, replacements)

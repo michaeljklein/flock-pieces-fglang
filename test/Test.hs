@@ -1,8 +1,8 @@
 module Main where
 
 import qualified Data.Flip (quickTestBatches)
-import Data.Hashable.Orphans (testHashableSeqIO)
-import Scratch.FGLang (quickCheckFGLang)
+import Data.Hashable.Orphans (quickCheckHashableSeq)
+import Data.FGLang (quickCheckFGLang)
 import Test.QuickCheck (quickCheck)
 import Data.HashSet.Utils (quickCheckHashSetUtils)
 
@@ -12,11 +12,11 @@ main = do
   Data.Flip.quickTestBatches
 
   putStrLn "Data.Hashable.Orphans:"
-  testHashableSeqIO
-
-  putStrLn "Scratch.FGLang:"
-  print =<< quickCheckFGLang
+  print =<< quickCheckHashableSeq
 
   putStrLn "Data.HashSet.Utils:"
   print =<< quickCheckHashSetUtils
+
+  putStrLn "Data.FGLang:"
+  print =<< quickCheckFGLang
 
