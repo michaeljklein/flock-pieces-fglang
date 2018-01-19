@@ -14,6 +14,16 @@ A very small term-rewriting language, related to the study of push-throughs.
 ```
 
 
+## Module Dependency Graph
+
+```bash
+render_graph.sh
+```
+
+![dependency_graph.jpg](https://github.com/michaeljklein/flock-pieces-fglang/raw/master/dependency_graph.jpg "graphmod dependency graph; see dependency_graph.dot, render_graph.sh")
+
+
+
 ## Tree
 
 ```bash
@@ -51,4 +61,5 @@ A very small term-rewriting language, related to the study of push-throughs.
 
 9 directories, 17 files
 ```
+
 
