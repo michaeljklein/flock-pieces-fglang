@@ -17,9 +17,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     Data.FGLang
-                     , Data.Flip
                      , Data.Functor.Join
-                     , Data.Functor.Object
                      , Data.Functor.Turn
                      , Data.HashSet.Utils
                      , Data.Hashable.Orphans
