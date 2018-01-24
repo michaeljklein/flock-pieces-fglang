@@ -69,7 +69,7 @@ newtype F3 a b c = F3 { getF3 :: b -> F4 a b c  }
 newtype F4 a b c = F4 { getF4 :: (c,  F1 a b c) } deriving (Show)
 
 
--- I believe the exact list of "free" morphisms between @F@'s is:
+-- | I believe the exact list of "free" morphisms between @F@'s is:
 --
 -- @
 -- 1 -> 1          (we don't have an @a@, and F1's the only one that depends directly on @a@)
@@ -77,6 +77,9 @@ newtype F4 a b c = F4 { getF4 :: (c,  F1 a b c) } deriving (Show)
 -- 3 -> 3          (as with F1, we don't have @b@..)
 -- 4 -> 1, 4       (`snd` gives F1, then we get stuck)
 -- @
+--
+freeMorphismsNotes :: ()
+freeMorphismsNotes = ()
 
 -- | `id`
 morphF11 :: F1 a b c -> F1 a b c
