@@ -24,16 +24,9 @@ library
                      , Data.Tuple.Utils
   build-depends:       base >= 4.9 && < 5
                      , QuickCheck
-                     , bifunctors
-                     , checkers
-                     , comonad
                      , containers
-                     , contravariant
-                     , deepseq
                      , hashable
                      , profunctors
-                     , random
-                     , void
                      , unordered-containers
   default-language:    Haskell2010
 

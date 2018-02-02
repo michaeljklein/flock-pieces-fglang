@@ -1,0 +1,159 @@
+I, [2018-02-02T14:48:44.330945 #90898]  INFO -- : Stack log:
+I, [2018-02-02T14:48:44.353248 #90898]  INFO -- : flock-pieces-fglang-0.1.0.0: unregistering (local file changes: README.md app/Main.hs flock-pieces-fglang.cabal src/Data/FGLang.hs src/Data/Functor/Join.hs src/D...)
+Building all executables for `flock-pieces-fglang' once. After a successful build of all of them, only specified executables will be rebuilt.
+flock-pieces-fglang-0.1.0.0: configure (lib + exe)
+Configuring flock-pieces-fglang-0.1.0.0...
+flock-pieces-fglang-0.1.0.0: build (lib + exe)
+Preprocessing library for flock-pieces-fglang-0.1.0.0..
+Building library for flock-pieces-fglang-0.1.0.0..
+[1 of 6] Compiling Data.Functor.Join ( src/Data/Functor/Join.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/Functor/Join.o )
+[2 of 6] Compiling Data.Functor.Turn ( src/Data/Functor/Turn.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/Functor/Turn.o )
+[3 of 6] Compiling Data.Hashable.Orphans ( src/Data/Hashable/Orphans.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/Hashable/Orphans.o )
+[4 of 6] Compiling Data.Tuple.Utils ( src/Data/Tuple/Utils.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/Tuple/Utils.o )
+[5 of 6] Compiling Data.HashSet.Utils ( src/Data/HashSet/Utils.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/HashSet/Utils.o )
+[6 of 6] Compiling Data.FGLang      ( src/Data/FGLang.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/FGLang.o )
+Preprocessing executable 'fglang-demo' for flock-pieces-fglang-0.1.0.0..
+Building executable 'fglang-demo' for flock-pieces-fglang-0.1.0.0..
+[1 of 1] Compiling Main             ( app/Main.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/fglang-demo/fglang-demo-tmp/Main.o )
+Linking .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/fglang-demo/fglang-demo ...
+flock-pieces-fglang-0.1.0.0: haddock
+Preprocessing library for flock-pieces-fglang-0.1.0.0..
+Running Haddock on library for flock-pieces-fglang-0.1.0.0..
+Haddock coverage:
+  86% ( 18 / 21) in 'Data.Functor.Join'
+  Missing documentation for:
+    Module header
+     (src/Data/Functor/Join.hs:62)
+     (src/Data/Functor/Join.hs:69)
+  54% (  7 / 13) in 'Data.Functor.Turn'
+  Missing documentation for:
+    Module header
+     (src/Data/Functor/Turn.hs:57)
+     (src/Data/Functor/Turn.hs:87)
+     (src/Data/Functor/Turn.hs:105)
+     (src/Data/Functor/Turn.hs:109)
+     (src/Data/Functor/Turn.hs:117)
+  60% (  3 /  5) in 'Data.Hashable.Orphans'
+  Missing documentation for:
+    Module header
+    quickCheckHashableSeq (src/Data/Hashable/Orphans.hs:26)
+  80% (  4 /  5) in 'Data.Tuple.Utils'
+  Missing documentation for:
+    Module header
+  64% (  9 / 14) in 'Data.HashSet.Utils'
+  Missing documentation for:
+    Module header
+    prop_allSplitsLength (src/Data/HashSet/Utils.hs:27)
+    prop_allSplitsHaveExpectedLengths (src/Data/HashSet/Utils.hs:38)
+    prop_allSplits_HaveExpectedLengths (src/Data/HashSet/Utils.hs:60)
+    quickCheckHashSetUtils (src/Data/HashSet/Utils.hs:82)
+  74% ( 20 / 27) in 'Data.FGLang'
+  Missing documentation for:
+     (src/Data/FGLang.hs:175)
+    prop_r0_base1 (src/Data/FGLang.hs:212)
+    prop_r0_base2 (src/Data/FGLang.hs:229)
+    prop_r0_base3 (src/Data/FGLang.hs:245)
+    prop_rs_bases (src/Data/FGLang.hs:299)
+    prop_ex_bases (src/Data/FGLang.hs:302)
+    quickCheckFGLang (src/Data/FGLang.hs:355)
+Warning: Data.Functor.Join: could not find link destinations for:
+    ~
+Documentation created:
+.stack-work/dist/x86_64-osx/Cabal-2.0.1.0/doc/html/flock-pieces-fglang/index.html,
+.stack-work/dist/x86_64-osx/Cabal-2.0.1.0/doc/html/flock-pieces-fglang/flock-pieces-fglang.txt
+Preprocessing benchmark 'flock-pieces-fglang-bench' for flock-pieces-fglang-0.1.0.0..
+Preprocessing test suite 'flock-pieces-fglang-test' for flock-pieces-fglang-0.1.0.0..
+Preprocessing executable 'fglang-demo' for flock-pieces-fglang-0.1.0.0..
+flock-pieces-fglang-0.1.0.0: copy/register
+Installing library in /Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/lib/x86_64-osx-ghc-8.2.2/flock-pieces-fglang-0.1.0.0-JKWJ7zVV7e5KZhQTkKRhjS
+Installing executable fglang-demo in /Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/bin
+Registering library for flock-pieces-fglang-0.1.0.0..
+Updating Haddock index for local packages in
+/Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/doc/index.html
+Updating Haddock index for local packages and dependencies in
+/Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/doc/all/index.html
+Haddock index for snapshot packages already up to date at:
+/Users/michaelklein/.stack/snapshots/x86_64-osx/lts-10.2/8.2.2/doc/index.html
+
+I, [2018-02-02T14:48:44.353329 #90898]  INFO -- : nil
+I, [2018-02-02T14:48:44.353383 #90898]  INFO -- : built_docs_dir: /Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/doc
+I, [2018-02-02T14:49:11.363092 #90898]  INFO -- : Docs copied to doc/
+I, [2018-02-02T14:53:08.734101 #92549]  INFO -- : Stack log:
+I, [2018-02-02T14:53:08.734484 #92549]  INFO -- : Building all executables for `flock-pieces-fglang' once. After a successful build of all of them, only specified executables will be rebuilt.
+flock-pieces-fglang-0.1.0.0: configure (lib + exe)
+Configuring flock-pieces-fglang-0.1.0.0...
+flock-pieces-fglang-0.1.0.0: build (lib + exe)
+Preprocessing library for flock-pieces-fglang-0.1.0.0..
+Building library for flock-pieces-fglang-0.1.0.0..
+[1 of 6] Compiling Data.Functor.Join ( src/Data/Functor/Join.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/Functor/Join.o )
+[2 of 6] Compiling Data.Functor.Turn ( src/Data/Functor/Turn.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/Functor/Turn.o )
+[3 of 6] Compiling Data.Hashable.Orphans ( src/Data/Hashable/Orphans.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/Hashable/Orphans.o )
+[4 of 6] Compiling Data.Tuple.Utils ( src/Data/Tuple/Utils.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/Tuple/Utils.o )
+[5 of 6] Compiling Data.HashSet.Utils ( src/Data/HashSet/Utils.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/HashSet/Utils.o )
+[6 of 6] Compiling Data.FGLang      ( src/Data/FGLang.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/Data/FGLang.o )
+Preprocessing executable 'fglang-demo' for flock-pieces-fglang-0.1.0.0..
+Building executable 'fglang-demo' for flock-pieces-fglang-0.1.0.0..
+[1 of 1] Compiling Main             ( app/Main.hs, .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/fglang-demo/fglang-demo-tmp/Main.o )
+Linking .stack-work/dist/x86_64-osx/Cabal-2.0.1.0/build/fglang-demo/fglang-demo ...
+flock-pieces-fglang-0.1.0.0: haddock
+Preprocessing library for flock-pieces-fglang-0.1.0.0..
+Running Haddock on library for flock-pieces-fglang-0.1.0.0..
+Haddock coverage:
+  86% ( 18 / 21) in 'Data.Functor.Join'
+  Missing documentation for:
+    Module header
+     (src/Data/Functor/Join.hs:62)
+     (src/Data/Functor/Join.hs:69)
+  54% (  7 / 13) in 'Data.Functor.Turn'
+  Missing documentation for:
+    Module header
+     (src/Data/Functor/Turn.hs:57)
+     (src/Data/Functor/Turn.hs:87)
+     (src/Data/Functor/Turn.hs:105)
+     (src/Data/Functor/Turn.hs:109)
+     (src/Data/Functor/Turn.hs:117)
+  60% (  3 /  5) in 'Data.Hashable.Orphans'
+  Missing documentation for:
+    Module header
+    quickCheckHashableSeq (src/Data/Hashable/Orphans.hs:26)
+  80% (  4 /  5) in 'Data.Tuple.Utils'
+  Missing documentation for:
+    Module header
+  64% (  9 / 14) in 'Data.HashSet.Utils'
+  Missing documentation for:
+    Module header
+    prop_allSplitsLength (src/Data/HashSet/Utils.hs:27)
+    prop_allSplitsHaveExpectedLengths (src/Data/HashSet/Utils.hs:38)
+    prop_allSplits_HaveExpectedLengths (src/Data/HashSet/Utils.hs:60)
+    quickCheckHashSetUtils (src/Data/HashSet/Utils.hs:82)
+  74% ( 20 / 27) in 'Data.FGLang'
+  Missing documentation for:
+     (src/Data/FGLang.hs:175)
+    prop_r0_base1 (src/Data/FGLang.hs:212)
+    prop_r0_base2 (src/Data/FGLang.hs:229)
+    prop_r0_base3 (src/Data/FGLang.hs:245)
+    prop_rs_bases (src/Data/FGLang.hs:299)
+    prop_ex_bases (src/Data/FGLang.hs:302)
+    quickCheckFGLang (src/Data/FGLang.hs:355)
+Warning: Data.Functor.Join: could not find link destinations for:
+    ~
+Documentation created:
+.stack-work/dist/x86_64-osx/Cabal-2.0.1.0/doc/html/flock-pieces-fglang/index.html,
+.stack-work/dist/x86_64-osx/Cabal-2.0.1.0/doc/html/flock-pieces-fglang/flock-pieces-fglang.txt
+Preprocessing benchmark 'flock-pieces-fglang-bench' for flock-pieces-fglang-0.1.0.0..
+Preprocessing test suite 'flock-pieces-fglang-test' for flock-pieces-fglang-0.1.0.0..
+Preprocessing executable 'fglang-demo' for flock-pieces-fglang-0.1.0.0..
+flock-pieces-fglang-0.1.0.0: copy/register
+Installing library in /Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/lib/x86_64-osx-ghc-8.2.2/flock-pieces-fglang-0.1.0.0-JKWJ7zVV7e5KZhQTkKRhjS
+Installing executable fglang-demo in /Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/bin
+Registering library for flock-pieces-fglang-0.1.0.0..
+Updating Haddock index for local packages in
+/Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/doc/index.html
+Updating Haddock index for local packages and dependencies in
+/Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/doc/all/index.html
+Haddock index for snapshot packages already up to date at:
+/Users/michaelklein/.stack/snapshots/x86_64-osx/lts-10.2/8.2.2/doc/index.html
+
+I, [2018-02-02T14:53:08.734512 #92549]  INFO -- : nil
+I, [2018-02-02T14:53:08.734558 #92549]  INFO -- : built_docs_dir: /Users/michaelklein/Desktop/flock/pieces/fglang/.stack-work/install/x86_64-osx/lts-10.2/8.2.2/doc
+I, [2018-02-02T15:02:22.766206 #92549]  INFO -- : Docs copied to doc/
