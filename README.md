@@ -62,4 +62,7 @@ render_graph.sh
 9 directories, 17 files
 ```
 
+# Docs
+
+Haddock generated documentation may be found [here](https://michaeljklein.github.io/flock-pieces-fglang/doc/index.html)
 
